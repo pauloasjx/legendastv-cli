@@ -23,35 +23,38 @@ type Subtitle struct {
 	//Date      time.Time
 }
 
-func Login(login string, password string) http.Client {
+type Client struct {
+	httpClient http.Client
+}
+
+func Login(login string, password string) Client {
 	_url := "http://legendas.tv/login"
 
 	jar, _ := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 
-	client := http.Client{Jar: jar}
-	resp, _ := client.PostForm(_url, url.Values{
+	httpClient := http.Client{Jar: jar}
+	resp, _ := httpClient.PostForm(_url, url.Values{
 		"data[User][username]": {login},
 		"data[User][password]": {password},
 	})
 	defer resp.Body.Close()
 
-	//body, _ := ioutil.ReadAll(resp.Body)
-
+	client := Client{httpClient}
 	return client
 }
 
-func Search(client http.Client, query string) []Subtitle {
+func (client Client) Search(query string) []Subtitle {
 	var subtitles []Subtitle
 	_url := fmt.Sprintf("http://legendas.tv/legenda/busca/%s", query)
 
-	resp, _ := client.Get(_url)
+	resp, _ := client.httpClient.Get(_url)
 	defer resp.Body.Close()
 
 	doc, _ := goquery.NewDocumentFromResponse(resp)
 	//fmt.Println(doc.Text())
 
-	r_downloads, _ := regexp.Compile(`(\d*) downloads`)
-	r_grade, _ := regexp.Compile(`nota (\d*)`)
+	//r_downloads, _ := regexp.Compile(`(\d*) downloads`)
+	//r_grade, _ := regexp.Compile(`nota (\d*)`)
 	//r_data, _ := regex.Compile(`(\d{2}/\d{2}/\d{4}).*`)
 
 	doc.Find(".f_left").Each(func(i int, container *goquery.Selection) {
@@ -64,11 +67,11 @@ func Search(client http.Client, query string) []Subtitle {
 
 		author := wrapper.Find("a").Text()
 
-		downloads := r_downloads.FindString(wrapper.Text())
-		downloads = downloads[:len(downloads)-10]
+		//downloads := r_downloads.FindString(wrapper.Text())
+		//downloads = downloads[:len(downloads)-10]
 
-		grade := r_grade.FindString(wrapper.Text())
-		grade = grade[5:]
+		//grade := r_grade.FindString(wrapper.Text())
+		//grade = grade[5:]
 
 		subtitles = append(subtitles, Subtitle{title, link, author})
 	})
@@ -78,10 +81,10 @@ func Search(client http.Client, query string) []Subtitle {
 	return subtitles
 }
 
-func Download(client http.Client, subtitle Subtitle) {
+func (client Client) Download(subtitle Subtitle) {
 	_url := fmt.Sprintf("http://legendas.tv%s", subtitle.Link)
 
-	resp, _ := client.Get(_url)
+	resp, _ := client.httpClient.Get(_url)
 	defer resp.Body.Close()
 
 	r_download, _ := regexp.Compile(`/downloadarquivo/\w*`)
@@ -91,7 +94,7 @@ func Download(client http.Client, subtitle Subtitle) {
 	file, _ := os.Create(fmt.Sprintf("%s.rar", subtitle.Title))
 	defer file.Close()
 
-	resp, _ = client.Get(link_download)
+	resp, _ = client.httpClient.Get(link_download)
 	defer resp.Body.Close()
 
 	_, _ = io.Copy(file, resp.Body)

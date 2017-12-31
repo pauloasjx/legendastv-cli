@@ -3,7 +3,9 @@ package main
 import (
 	"./legendastv"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 type (
@@ -20,7 +22,16 @@ func main() {
 	json.Unmarshal(config_file, &config)
 
 	client := legendastv.Login(config.Login, config.Password)
-	subtitles := legendastv.Search(client, "mr robot s03e03")
-	legendastv.Download(client, subtitles[0])
+
+	subtitles := client.Search(os.Args[1])
+
+	for i, subtitle := range subtitles {
+		fmt.Println(i+1, subtitle.Title)
+	}
+	fmt.Printf("\nChoose a subtitle: ")
+
+	var a int
+	fmt.Scanf("%d", &a)
+	client.Download(subtitles[a-1])
 
 }
