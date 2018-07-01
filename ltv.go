@@ -1,11 +1,11 @@
 package main
 
 import (
-	"./legendastv"
 	"fmt"
 	"os"
 
 	"github.com/howeyc/gopass"
+	"github.com/pstwh/legendastv-cli/legendastv"
 )
 
 func main() {
