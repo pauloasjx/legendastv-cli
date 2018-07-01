@@ -18,9 +18,6 @@ type Subtitle struct {
 	Title  string
 	Link   string
 	Author string
-	//Downloads int64
-	//Grade     float64
-	//Date      time.Time
 }
 
 type Client struct {
@@ -51,32 +48,15 @@ func (client Client) Search(query string) []Subtitle {
 	defer resp.Body.Close()
 
 	doc, _ := goquery.NewDocumentFromResponse(resp)
-	//fmt.Println(doc.Text())
-
-	//r_downloads, _ := regexp.Compile(`(\d*) downloads`)
-	//r_grade, _ := regexp.Compile(`nota (\d*)`)
-	//r_data, _ := regex.Compile(`(\d{2}/\d{2}/\d{4}).*`)
 
 	doc.Find(".f_left").Each(func(i int, container *goquery.Selection) {
 		wrapper := container.Find("p:not([class])")
-
 		title := wrapper.Text()
 		link, _ := wrapper.Find("a").Attr("href")
-
 		wrapper = container.Find("p[class='data']")
-
 		author := wrapper.Find("a").Text()
-
-		//downloads := r_downloads.FindString(wrapper.Text())
-		//downloads = downloads[:len(downloads)-10]
-
-		//grade := r_grade.FindString(wrapper.Text())
-		//grade = grade[5:]
-
 		subtitles = append(subtitles, Subtitle{title, link, author})
 	})
-
-	//fmt.Println(subtitles[0])
 
 	return subtitles
 }
