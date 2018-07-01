@@ -5,7 +5,7 @@
 
 Unofficial command line interface for <b><a href="http://legendas.tv/">legendastv</a></b>
 
-<a href="https://asciinema.org/a/8zdc8dl0w4hXyMDIpg2z86Ppc" target="_blank"><img src="https://asciinema.org/a/8zdc8dl0w4hXyMDIpg2z86Ppc.png" /></a>
+[![asciicast](https://asciinema.org/a/8zdc8dl0w4hXyMDIpg2z86Ppc.png)](https://asciinema.org/a/8zdc8dl0w4hXyMDIpg2z86Ppc)
 
 
 ### Installing
