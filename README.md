@@ -23,8 +23,8 @@ sudo mv ltv-darwin /usr/local/bin/ltv
 <b>Linux:</b>
 ```
 wget https://raw.githubusercontent.com/pstwh/legendastv-cli/master/binaries/ltv-linuxamd64 && \
-sudo chmod +x ltv-darwin && \
-sudo mv ltv-darwin /usr/local/bin/ltv
+sudo chmod +x ltv-linuxamd64 && \
+sudo mv ltv-linuxamd64 /usr/local/bin/ltv
 ```
 
 
